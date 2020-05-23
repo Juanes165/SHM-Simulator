@@ -3,16 +3,19 @@
 
 <head>
   <title>Simulador MAS</title>
-  <script src="p5.js"></script>
-  <script src="canvas.js"></script>
-  <script src="functions.js"></script>
+  <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″ />
 </head>
 
 <body>
+  <script src="p5.js"></script>
+  <script src="functions.js"></script>
+  <script src="canvas.js"></script>
+  
   <form action = "" id = "form">
-    <input type = "number" id = "masa">
-    <input type = "number" id = "masaPolea">
-    <input type = "number" id = "constanteElastica">
+    <p>Masa</p><input type = "number" id = "mass" value = "10">
+    <p>Masa de la polea</p><input type = "number" id = "pulleyMass" value = "10">
+    <p>Constante elastica</p><input type = "number" id = "springConstant" value = "100"><br><br>
+
   </form>
 </body>
 
