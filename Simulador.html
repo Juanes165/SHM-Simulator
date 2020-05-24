@@ -4,19 +4,54 @@
 <head>
   <title>Simulador MAS</title>
   <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″ />
+
 </head>
+<style>
+  input[type=number] {
+    width: 40px;
+    height: 25px;
+  }
+
+  td.column {
+    width: 160px;
+    height: 30px;
+  }
+</style>
 
 <body>
   <script src="p5.js"></script>
   <script src="functions.js"></script>
   <script src="canvas.js"></script>
-  
-  <form action = "" id = "form">
-    <p>Masa</p><input type = "number" id = "mass" value = "10">
-    <p>Masa de la polea</p><input type = "number" id = "pulleyMass" value = "10">
-    <p>Constante elastica</p><input type = "number" id = "springConstant" value = "100"><br><br>
-
+  <form action="" id="form">
+    <table border="0">
+      <tr>
+        <td colspan="2">
+          <div id="prueba"></div>
+        </td>
+      </tr>
+      <tr>
+        <td class = "column">Masa del objeto</td>
+        <td><input type="number" id="mass" value="10"></td>
+      </tr>
+      <tr>
+        <td class = "column">Masa de la polea</td>
+        <td><input type="number" id="pulleyMass" value="10" size="1"></td>
+      </tr>
+      <tr>
+        <td class = "column">Constante Elástica</td>
+        <td><input type="number" id="springConstant" value="100" size="1"></td>
+      </tr>
+      <tr>
+        <td class = "column">Desplazamiento inicial</td>
+        <td><input type="number" id="initialDisplacement" value="1" size="1"></td>
+      </tr>
+      <tr>
+        <td class = "column">Velocidad inicial</td>
+        <td><input type="number" id="initialVelocity" value="0" size="1"></td>
+      </tr>
+    </table>
   </form>
+
 </body>
 
 </html>
