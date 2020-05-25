@@ -29,6 +29,9 @@ function periodCalc(springK, mass1, mass2) {
 function phiCalc(springK, mass1, mass2, initDisp, initVel) {
 
     let w = naturalFrequencyCalc(springK, mass1, mass2);
+    if(initDisp == 0 && initVel == 0){
+        return 0;
+    }
     return Math.atan(w * initDisp / initVel);
 }
 
