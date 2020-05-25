@@ -28,37 +28,42 @@ var timeSeconds = timer / 15;
 const startButton = { x: 20, y: 200, sizeX: 80, sizeY: 50 } //20, 325, 80, 50
 const resetButton = { x: 20, y: 275, sizeX: 80, sizeY: 50 } //120, 325, 80, 50
 
+
+/*let img;
+function preload() {
+  img = loadImage('img/resorte.jpg');
+}*/
+
 function setup() {
     let canvas = createCanvas(1000, 700);
     background(255);
     frameRate(15);
     textAlign(CENTER, CENTER);
-    canvas.parent('prueba');
+    canvas.parent('canvas');
 }
 
 function draw() {
-
+    //User-entered values
     mass = document.getElementById("mass").value * 1;
     pulleyMass = document.getElementById("pulleyMass").value * 1;
     springConstant = document.getElementById("springConstant").value * 1;
     initialDisplacement = document.getElementById("initialDisplacement").value * 1;
     initialVelocity = document.getElementById("initialVelocity").value * 1;
-
+    //Static values
     naturalFrequency = naturalFrequencyCalc(springConstant, mass, pulleyMass);
     frequency = frequencyCalc(springConstant, mass, pulleyMass);
     period = periodCalc(springConstant, mass, pulleyMass);
     phi = phiCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity);
     amplitude = amplitudeCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity);
-
+    //Variable values
     displacement = displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
     velocity = velocityCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
     kineticE = kineticEnergy(mass, pulleyMass, velocity);
     potentialE = potentialEnergy(springConstant, displacement);
 
-
     background(230);
     fill(255, 255, 255)
-    rect(0, 0, 450, 400)
+    rect(0, 0, 500, 500)
     let c = color(200);
     fill(c);
     textAlign(LEFT, CENTER);
@@ -67,66 +72,88 @@ function draw() {
     const totalEnergy = kineticE + potentialE;
     textSize(15)
     fill(255, 100, 100)
-    circle(550, 100, 150)
+    circle(650, 100, 150)
     fill(255, 0, 0)
-    text("Energía cinética", 635, 85)
-
+    text("Energía cinética", 750, 85)
     fill(150, 255, 150)
-    arc(550, 100, 150, 150, 0, potentialE * 2 * PI / totalEnergy)
+    arc(650, 100, 150, 150, 0, potentialE * 2 * PI / totalEnergy)
     fill(0, 255, 0)
-    text("Energía potencial", 635, 115)
+    text("Energía potencial", 750, 115)
+
+    if (initialDisplacement == 0 && initialVelocity == 0) {
+        //Conditional if there is no movement
+        fill(c)
+        circle(650, 100, 150)
+    }
     fill(0)
 
-    //
+    //Movement graph
     fill(255)
-    rect(475, 200, 350, 150)
+    rect(550, 250, 400, 300)
+    line(550, 400, 950, 400)
     fill(0)
-    text("Aqui va la grafica del movimiento", 475, 200, 350, 150)
-
+    //positionGraph.push({x: 550 + timeSeconds * 40, y: squareY})
+    smooth()
+    for (i = 0; i < 400; i++) {
+        rect(i + 550,
+            10 * displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i / 70) + 325,
+            1,
+            1);
+    }
+    noSmooth()
     textAlign(CENTER, CENTER)
     fill(c)
 
-    //Movimiento de la masa
-    if (start) {
-        if (squareY >= 200 && squareY <= 300) {
-            if (invert) {
-                squareY = squareY - speed;
-            } else {
-                squareY = squareY + speed;
-            }
-        } else {
-            invert = !invert;
-            if (squareY - speed == 300) {
-                squareY = 300
 
-            } else {
-                squareY = 200
-            }
-        }
+    //Mass movement
+    squareY = (5 * displacement / amplitude + 15) * 20; //Min: 200, Max: 400
+    if (amplitude == 0) {
+        squareY = 300;
     }
 
-    line(25, 25, 25, 125) //Pared
+    textAlign(LEFT, CENTER)
+    line(25, 25, 25, 125) //Wall
+    line(300, 75, squareY / 2, 75); //Spring-Pulley line
+    stroke(255, 0, 0)
+    line(50, 75, squareY / 2, 75); //"Spring"
+    stroke(0)
+    textSize(30);
+    fill(0)
+    text("K", 75, 100)
+    fill(c)
+    stroke(0);
+    strokeWeight(1)
+    line(25, 75, 50, 75);
+    circle(300, 125, 100); //Pulley
+    line(350, 125, 350, squareY); //Pulley-Mass line
+    square(325, squareY, 50); //Mass
 
-    line(238, 75, 25, 75); //Cuerda Resorte-Polea
+    fill(0)
+    textSize(20)
+    line(400, 200, 425, 200); /*Guide -5 mts*/ text("Xmin", 430, 200);
+    line(400, 300, 425, 300); /*Guide 0 mts*/ text("X = 0", 430, 300);
+    line(400, 400, 425, 400); /*Guide 5 mts*/ text("Xmax", 430, 400)
 
-    circle(238, 112, 75); //Masa
-
-    line(275, 112, 275, squareY); //Cuerda Polea - Masa
-
-    square(250, squareY, 50); //Masa
-
+    textAlign(CENTER, CENTER);
     fill(0);
     textSize(30);
-    text("M", 275, squareY + 25)
+    text("m", 350, squareY + 25)
 
-    //Boton de start
+    //Spring
+    line(50, 75, )
+    for(i=1; i<=7; i++){
+        line(50 + 20*i, 90, 50 + 20*i, 60)
+        line(50 + 20*i, 90, 70 + 20*i, 60)
+    }
+
+    //Start button
     fill(255);
     rect(startButton.x, startButton.y, startButton.sizeX, startButton.sizeY)
     fill(0)
     textSize(20);
     text(startText, startButton.x, startButton.y, startButton.sizeX, startButton.sizeY)
 
-    //Boton de reset
+    //Reset button
     fill(255);
     rect(resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY)
     fill(0)
@@ -148,9 +175,7 @@ function draw() {
 
     textSize(15);
     textAlign(LEFT, CENTER);
-    text("Masa: " + mass + " Kg", 25, 415);
-    text("Masa de la polea: " + pulleyMass + " Kg", 25, 430);
-    text("Constante elástica: " + springConstant + " N/m", 25, 445);
+
     text("Frecuencia natural: " + naturalFrequency + " Rad/s", 25, 460);
     text("Frecuencia: " + frequency + " Hz", 25, 475);
     text("Periodo: " + period + " seg", 25, 490);
@@ -166,9 +191,9 @@ function draw() {
     //M rotativa de la polea
     fill(0)
     textAlign(CENTER, CENTER);
-    translate(238, 112);
+    translate(300, 125);
     rotate(PI * (squareY - 200) / 100);
-    textSize(32);
+    textSize(40);
     text("M", 0, 0);
 
     rotate(-PI * (squareY - 200) / 100);
