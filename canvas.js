@@ -92,59 +92,75 @@ function draw() {
     rect(550, 250, 400, 300)
     line(550, 400, 950, 400)
     fill(0)
-    //positionGraph.push({x: 550 + timeSeconds * 40, y: squareY})
-    smooth()
+
     for (i = 0; i < 400; i++) {
         rect(i + 550,
             10 * displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i / 70) + 325,
             1,
             1);
     }
-    noSmooth()
-    textAlign(CENTER, CENTER)
+
+
     fill(c)
 
-
+    fill(0)
+    textSize(20)
+    textAlign(LEFT, CENTER)
     //Mass movement
-    squareY = (5 * displacement / amplitude + 15) * 20; //Min: 200, Max: 400
+    if (amplitude > 5) {
+        squareY = (5 * displacement / amplitude + 15) * 20; //Min: 200, Max: 400
+        line(400, 200, 415, 200); /*Guide X min*/ text("X min", 430, 200);
+        line(400, 300, 415, 300); /*Guide 0 mts*/ text("X = 0", 430, 300);
+        line(400, 400, 415, 400); /*Guide X max*/ text("X max", 430, 400);
+    }
+    else {
+        squareY = (displacement + 15) * 20
+        line(400, 200, 415, 200); /*Guide -5 mts*/ text("-5 mts", 430, 200);
+        line(400, 300, 415, 300); /*Guide 0 mts*/ text("0 mts", 430, 300);
+        line(400, 400, 415, 400); /*Guide 5 mts*/ text("5 mts", 430, 400);
+    }
+
     if (amplitude == 0) {
         squareY = 300;
     }
 
-    textAlign(LEFT, CENTER)
+
     line(25, 25, 25, 125) //Wall
+    line(25, 75, 60, 75);
     line(300, 75, squareY / 2, 75); //Spring-Pulley line
-    stroke(255, 0, 0)
-    line(50, 75, squareY / 2, 75); //"Spring"
-    stroke(0)
+
+    const springLines = squareY / 20 - 10;
+    const springLinesTwo = -1 * (springLines - 60);
+    const springLinesThree = 5 + 1.5 * springLines;
+
+    //Spring
+    for (i = 1; i <= 7; i++) {
+        line(springLinesTwo + springLinesThree * i, 90, springLinesTwo + springLinesThree * i, 60)
+    }
+
+    for (i = 1; i <= 6; i++) {
+        line(springLinesTwo + springLinesThree * i, 90, springLinesThree + springLinesTwo + springLinesThree * i, 60)
+    }
+    //line(60, 75, 70, 60)
+    line(60, 75, springLinesTwo + springLinesThree, 60)
+    line(springLinesTwo + springLinesThree * 7, 90, squareY / 2, 75)
+
     textSize(30);
     fill(0)
-    text("K", 75, 100)
+    text("K", 75, 115)
     fill(c)
-    stroke(0);
-    strokeWeight(1)
-    line(25, 75, 50, 75);
+
+
     circle(300, 125, 100); //Pulley
     line(350, 125, 350, squareY); //Pulley-Mass line
     square(325, squareY, 50); //Mass
-
-    fill(0)
-    textSize(20)
-    line(400, 200, 425, 200); /*Guide -5 mts*/ text("Xmin", 430, 200);
-    line(400, 300, 425, 300); /*Guide 0 mts*/ text("X = 0", 430, 300);
-    line(400, 400, 425, 400); /*Guide 5 mts*/ text("Xmax", 430, 400)
 
     textAlign(CENTER, CENTER);
     fill(0);
     textSize(30);
     text("m", 350, squareY + 25)
 
-    //Spring
-    line(50, 75, )
-    for(i=1; i<=7; i++){
-        line(50 + 20*i, 90, 50 + 20*i, 60)
-        line(50 + 20*i, 90, 70 + 20*i, 60)
-    }
+
 
     //Start button
     fill(255);
