@@ -19,27 +19,44 @@ var amplitude;
 
 var displacement;
 var velocity;
-var kineticE;
-var potentialE;
+var kineticEnergy;
+var potentialEnergy;
 
 var timer = 0;
 var timeSeconds = timer / 15;
+var currentFrameRate = 12;
+var animationSpeed = "x1";
 
-const startButton = { x: 20, y: 200, sizeX: 80, sizeY: 50 } //20, 325, 80, 50
-const resetButton = { x: 20, y: 275, sizeX: 80, sizeY: 50 } //120, 325, 80, 50
+const startButton = { x: 20, y: 175, sizeX: 80, sizeY: 50 };
+const resetButton = { x: 20, y: 250, sizeX: 80, sizeY: 50 };
+const speedUpButton = { x: 400, y: 500, sizeX: 35, sizeY: 35};
+const speedDownButton = { x: 450, y: 500, sizeX: 35, sizeY: 35};
 
-
-/*let img;
-function preload() {
-  img = loadImage('img/resorte.jpg');
-}*/
+/**
+ * Returns true if mouse is on the button
+ * @param {object} button 
+ * @returns {boolean}
+ */
+function mouseOnButton(button) {
+    if (mouseX >= button.x &&
+        mouseX <= (button.x + button.sizeX) &&
+        mouseY >= button.y &&
+        mouseY <= (button.y + button.sizeY)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 function setup() {
-    let canvas = createCanvas(1000, 700);
-    background(255);
-    frameRate(15);
+    let canvas = createCanvas(1000, 578);
+    background(230);
+    frameRate(currentFrameRate);
     textAlign(CENTER, CENTER);
+    strokeWeight(2);
     canvas.parent('canvas');
+    
 }
 
 function draw() {
@@ -58,203 +75,370 @@ function draw() {
     //Variable values
     displacement = displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
     velocity = velocityCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
-    kineticE = kineticEnergy(mass, pulleyMass, velocity);
-    potentialE = potentialEnergy(springConstant, displacement);
-
+    kineticEnergy = kineticEnergyCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
+    potentialEnergy = potentialEnergyCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
+    
+    //Initial values
     background(230);
-    fill(255, 255, 255)
-    rect(0, 0, 500, 500)
-    let c = color(200);
-    fill(c);
+    fill(255);
+    rect(1, 1, 500, 550); //Animation space
+    textSize(18);
     textAlign(LEFT, CENTER);
 
     //Energy graph (pie chart)
-    const totalEnergy = kineticE + potentialE;
-    textSize(15)
-    fill(255, 100, 100)
-    circle(650, 100, 150)
-    fill(255, 0, 0)
-    text("Energía cinética", 750, 85)
-    fill(150, 255, 150)
-    arc(650, 100, 150, 150, 0, potentialE * 2 * PI / totalEnergy)
-    fill(0, 255, 0)
-    text("Energía potencial", 750, 115)
-
+    const totalEnergy = kineticEnergy + potentialEnergy;
+    fill(255, 100, 100);
+    circle(650, 100, 150);
+    fill(150, 255, 150);
+    if(roundByDecimals(potentialEnergy, 3) != 0){
+        arc(650, 100, 150, 150, 0, potentialEnergy * 2 * PI / totalEnergy);
+    }
     if (initialDisplacement == 0 && initialVelocity == 0) {
         //Conditional if there is no movement
-        fill(c)
-        circle(650, 100, 150)
+        fill(200);
+        circle(650, 100, 150);
     }
-    fill(0)
+    noStroke();
+    fill(255, 0, 0);
+    text("Energía Cinética: " + roundByDecimals(kineticEnergy, 3) + " Joules", 575, 200);
+    fill(0, 150, 0);
+    text("Energía Potencial: " + roundByDecimals(potentialEnergy, 3) + " Joules", 575, 225);
+    stroke(0);
 
     //Movement graph
-    fill(255)
-    rect(550, 250, 400, 300)
-    line(550, 400, 950, 400)
-    fill(0)
-
+    textAlign(CENTER, CENTER);
+    fill(255);
+    rect(550, 250, 400, 301);
+    
+    strokeWeight(3);
+    stroke(150, 0, 255);
     for (i = 0; i < 400; i++) {
-        rect(i + 550,
-            10 * displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i / 70) + 325,
-            1,
-            1);
+        //Displacement graph
+        let d = displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 200); //displacement
+        point(i + 550, d * 70 / 11 + 325);
+    }
+    stroke(255, 255, 0);
+    for (i = 0; i < 400; i++) {
+        //Velocity graph
+        let d = velocityCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 200); //displacement
+        point(i + 550, d * 70 / 45 + 475);
+    }
+    noStroke();
+    strokeWeight(2);
+    fill(255);
+    if(timeSeconds <= period){
+        //White square on the graph that moves over time
+        let squarePosition = 400 * timeSeconds / period
+        rect(squarePosition + 550, 250, 400 - squarePosition, 300)
     }
 
-
-    fill(c)
-
-    fill(0)
-    textSize(20)
-    textAlign(LEFT, CENTER)
+    fill(0);
+    text("Tiempo(seg): ", 475, 569)
+    for (i = 0; i < period; i++) {
+        let lines = 400 / period;
+        stroke(0);
+        line(i * lines + 550, 250, i * lines + 550, 550)
+        noStroke();
+        text(i, i * lines + 550, 570)
+    }
+    stroke(0);
+    line(550, 400, 950, 400);
+    noFill();
+    rect(550, 250, 400, 301);
+    fill(0);
+    
     //Mass movement
+    textSize(20);
+    stroke(0);
+    textAlign(LEFT, CENTER);
     if (amplitude > 5) {
-        squareY = (5 * displacement / amplitude + 15) * 20; //Min: 200, Max: 400
-        line(400, 200, 415, 200); /*Guide X min*/ text("X min", 430, 200);
-        line(400, 300, 415, 300); /*Guide 0 mts*/ text("X = 0", 430, 300);
-        line(400, 400, 415, 400); /*Guide X max*/ text("X max", 430, 400);
+        //Mass will move from Xmax to Xmin if amplitude exceeds 5
+        squareY = (5 * displacement / amplitude + 15) * 20;
+        line(400, 200, 415, 200); /*Guide X min*/ 
+        line(400, 300, 415, 300); /*Guide 0 mts*/ 
+        line(400, 400, 415, 400); /*Guide X max*/
+        noStroke();
+        text("X min", 430, 200);
+        text("X = 0", 430, 300);
+        text("X max", 430, 400);
     }
     else {
+        //Mass will move between -5 and 5 meters proportional to the amplitude
         squareY = (displacement + 15) * 20
-        line(400, 200, 415, 200); /*Guide -5 mts*/ text("-5 mts", 430, 200);
-        line(400, 300, 415, 300); /*Guide 0 mts*/ text("0 mts", 430, 300);
-        line(400, 400, 415, 400); /*Guide 5 mts*/ text("5 mts", 430, 400);
+        line(400, 200, 415, 200); /*Guide -5 mts*/
+        line(400, 300, 415, 300); /*Guide 0 mts*/
+        line(400, 400, 415, 400); /*Guide 5 mts*/
+        noStroke();
+        text("-5 mts", 430, 200);
+        text(" 0 mts", 430, 300);
+        text(" 5 mts", 430, 400);
     }
-
     if (amplitude == 0) {
+        //Mass won't move
         squareY = 300;
     }
 
-
-    line(25, 25, 25, 125) //Wall
-    line(25, 75, 60, 75);
+    stroke(0)
+    line(25, 25, 25, 125); //Wall
+    line(25, 75, 60, 75); //Wall-Spring line
     line(300, 75, squareY / 2, 75); //Spring-Pulley line
 
-    const springLines = squareY / 20 - 10;
-    const springLinesTwo = -1 * (springLines - 60);
-    const springLinesThree = 5 + 1.5 * springLines;
-
     //Spring
+    const springLines = squareY / 20 - 10;                  //Constants allow to move the spring proportionally
+    const springLinesMovement = -1 * (springLines - 60);    //to the mass movement and to create the
+    const springLinesCompression = 5 + 1.5 * springLines;   //contraction effect
+
     for (i = 1; i <= 7; i++) {
-        line(springLinesTwo + springLinesThree * i, 90, springLinesTwo + springLinesThree * i, 60)
+        //Draw vertical lines of the spring
+        line(springLinesMovement + springLinesCompression * i,
+            90,
+            springLinesMovement + springLinesCompression * i,
+            60);
     }
 
     for (i = 1; i <= 6; i++) {
-        line(springLinesTwo + springLinesThree * i, 90, springLinesThree + springLinesTwo + springLinesThree * i, 60)
+        //Draw diagonal lines of the spring
+        line(springLinesMovement + springLinesCompression * i,
+            90,
+            springLinesCompression + springLinesMovement + springLinesCompression * i,
+            60);
     }
-    //line(60, 75, 70, 60)
-    line(60, 75, springLinesTwo + springLinesThree, 60)
-    line(springLinesTwo + springLinesThree * 7, 90, squareY / 2, 75)
-
-    textSize(30);
-    fill(0)
-    text("K", 75, 115)
-    fill(c)
-
+    line(60, 75, springLinesMovement + springLinesCompression, 60);
+    line(springLinesMovement + springLinesCompression * 7, 90, squareY / 2, 75);
+    
+    //Letter below the spring
+    textSize(20);
+    fill(0);
+    noStroke();
+    text("K = " + springConstant + " N/m", 60, 115)
+    fill(200);
+    stroke(0);
 
     circle(300, 125, 100); //Pulley
     line(350, 125, 350, squareY); //Pulley-Mass line
     square(325, squareY, 50); //Mass
-
+    
+    //Letter m in the mass
     textAlign(CENTER, CENTER);
     fill(0);
     textSize(30);
     text("m", 350, squareY + 25)
 
-
-
     //Start button
-    fill(255);
-    rect(startButton.x, startButton.y, startButton.sizeX, startButton.sizeY)
-    fill(0)
     textSize(20);
-    text(startText, startButton.x, startButton.y, startButton.sizeX, startButton.sizeY)
+    stroke(0);
+    if(mouseOnButton(startButton)){
+        fill(100, 100, 255);
+        rect(startButton.x, startButton.y, startButton.sizeX, startButton.sizeY);
+        noStroke();
+        fill(255);
+        text(startText, startButton.x, startButton.y, startButton.sizeX, startButton.sizeY);
+    }
+    else{
+        fill(255);
+        rect(startButton.x, startButton.y, startButton.sizeX, startButton.sizeY);
+        noStroke();
+        fill(0);
+        text(startText, startButton.x, startButton.y, startButton.sizeX, startButton.sizeY);
+    }
 
     //Reset button
-    fill(255);
-    rect(resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY)
-    fill(0)
-    text("RESET", resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY)
+    stroke(0);
+    if(mouseOnButton(resetButton)){
+        fill(100, 100, 255);
+        rect(resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY);
+        noStroke();
+        fill(255);
+        text("RESET", resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY);
+    }
+    else{
+        fill(255);
+        rect(resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY);
+        noStroke();
+        fill(0);
+        text("RESET", resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY);
+    }
 
-    /*
-    //Boton de velocidad
-    fill(255);
-    rect(220, 325, 80, 50)
-    rect(300, 325, 50, 50)
-    rect(350, 325, 50, 50)
-    fill(0)
-    textSize(50)
-    text("+", 325, 353)
-    text("-", 375, 350)
-    textSize(20)
-    text("SPEED", 260, 350)*/
+    //Speed Up Button
+    stroke(0);
+    textSize(35);
+    textAlign(RIGHT, BOTTOM);
+    if(mouseOnButton(speedUpButton)){
+        fill(100, 100, 255);
+        rect(speedUpButton.x, speedUpButton.y, speedUpButton.sizeX, speedUpButton.sizeY);
+        noStroke();
+        fill(255);
+        text("+", speedUpButton.x, speedUpButton.y, speedUpButton.sizeX, speedUpButton.sizeY);
+    }
+    else{
+        fill(255);
+        rect(speedUpButton.x, speedUpButton.y, speedUpButton.sizeX, speedUpButton.sizeY);
+        noStroke();
+        fill(0);
+        text("+", speedUpButton.x, speedUpButton.y, speedUpButton.sizeX, speedUpButton.sizeY);
+    }
+
+    if (mouseOnButton(startButton) || mouseOnButton(resetButton)) {
+        cursor(HAND);
+    }
+    else {
+        cursor(ARROW);
+    }
+
+    //Speed Down button
+    stroke(0);
+    if(mouseOnButton(speedDownButton)){
+        fill(100, 100, 255);
+        rect(speedDownButton.x, speedDownButton.y, speedDownButton.sizeX, speedDownButton.sizeY);
+        noStroke();
+        fill(255);
+        text("-", speedDownButton.x, speedDownButton.y, speedDownButton.sizeX, speedDownButton.sizeY);
+    }
+    else{
+        fill(255);
+        rect(speedDownButton.x, speedDownButton.y, speedDownButton.sizeX, speedDownButton.sizeY);
+        noStroke();
+        fill(0);
+        text("-", speedDownButton.x, speedDownButton.y, speedDownButton.sizeX, speedDownButton.sizeY);
+    }
+
+    if (mouseOnButton(startButton) ||
+        mouseOnButton(resetButton) ||
+        mouseOnButton(speedUpButton) ||
+        mouseOnButton(speedDownButton)) {
+        cursor(HAND);
+    }
+    else {
+        cursor(ARROW);
+    }
+    textSize(20);
+    text("Velocidad: ", 395, 528);
+
+    //current speed label
+    fill(0);
+    textSize(18);
+    switch(currentFrameRate) {
+        case 6:
+            animationSpeed = "x0.5";
+            break;
+        case 12:
+            animationSpeed = "x1";
+            break;
+        case 24:
+            animationSpeed = "x2";
+            break;
+        case 36:
+            animationSpeed = "x3";
+            break;
+        case 48:
+            animationSpeed = "x4";
+            break;
+        case 60:
+            animationSpeed = "x5";
+            break;
+    }
+    text("Velocidad de animación: " + animationSpeed, 485, 30);
 
 
-    textSize(15);
+    //Values to show in screen
+    noStroke();
+    fill(0);
+    textSize(18);
     textAlign(LEFT, CENTER);
+    text("Frecuencia natural: " + roundByDecimals(naturalFrequency, 3) + " rad/seg", 15, 350);
+    text("Frecuencia: " + roundByDecimals(frequency, 3) + " Hz", 15, 375);
+    text("Periodo: " + roundByDecimals(period, 3) + " seg", 15, 400);
+    text("Desfase: " + roundByDecimals(phi, 3), 15, 425);
+    text("Amplitud: " + roundByDecimals(amplitude, 3), 15, 450);
+    text("Posición: " + roundByDecimals(displacement, 3) + " mts", 15, 475);
+    text("Velocidad: " + roundByDecimals(velocity, 3) + " mts/seg", 15, 500);
+    text("Time: " + roundByDecimals(timeSeconds, 1) + " seg", 15, 525);
 
-    text("Frecuencia natural: " + naturalFrequency + " Rad/s", 25, 460);
-    text("Frecuencia: " + frequency + " Hz", 25, 475);
-    text("Periodo: " + period + " seg", 25, 490);
-    text("Phi: " + phi, 25, 505);
-    text("Amplitud: " + amplitude, 25, 520);
-    text("Desplazamiento: " + roundByDecimals(displacement, 3) + " mts", 25, 535);
-    text("Velocidad: " + roundByDecimals(velocity, 3) + " mts/seg", 25, 550);
-    text("Energía Cinética: " + roundByDecimals(kineticE, 3) + " Joules", 25, 565);
-    text("Energía Potencial: " + roundByDecimals(potentialE, 3) + " Joules", 25, 580);
-    text("Time: " + roundByDecimals(timeSeconds, 1) + " seg", 25, 595);
-
-
-    //M rotativa de la polea
+    //Letter M in the pulley
     fill(0)
+    stroke(0);
     textAlign(CENTER, CENTER);
     translate(300, 125);
     rotate(PI * (squareY - 200) / 100);
     textSize(40);
     text("M", 0, 0);
-
     rotate(-PI * (squareY - 200) / 100);
-
+    
+    //Timing the animation
     if (start) {
         timer += 1;
     }
-    timeSeconds = timer / 15;
-
+    timeSeconds = timer / 12; 
+    
+    frameRate(currentFrameRate); //animation speed change
 }
 
 function mouseClicked() {
-    if (mouseX >= startButton.x &&
-        mouseX <= (startButton.x + startButton.sizeX) &&
-        mouseY >= startButton.y &&
-        mouseY <= (startButton.y + startButton.sizeY)) {
-
+    if (mouseOnButton(startButton)) {
+        //If mouse is on start/stop button
         if (start) {
             start = false;
             startText = "START";
+
         } else {
             start = true;
             startText = "STOP";
         }
     }
-    if (mouseX >= resetButton.x &&
-        mouseX <= (resetButton.x + resetButton.sizeX) &&
-        mouseY >= resetButton.y &&
-        mouseY <= (resetButton.y + resetButton.sizeY)) {
 
+    if (mouseOnButton(resetButton)) {
+        //If mouse is on reset button
         start = false;
         startText = "START"
         squareY = 200;
         timer = 0;
     }
-    /*
-    if (mouseX >= 300 && mouseX <= 350 && mouseY >= 325 && mouseY <= 375){
-        if(speed < 4){
-            speed = speed + 1;
+    
+    if (mouseOnButton(speedUpButton)) {
+        //If mouse is on speed up button
+        switch(currentFrameRate){
+            case 6:
+                currentFrameRate = 12
+                break;
+            case 12:
+                currentFrameRate = 24;
+                break;
+            case 24:
+                currentFrameRate = 36;
+                break;
+            case 36:
+                currentFrameRate = 48;
+                break;
+            case 48:
+                currentFrameRate = 60;
+                break;
+            default:
+                break;
         }
     }
-    if (mouseX >= 350 && mouseX <= 400 && mouseY >= 325 && mouseY <= 375){
-        if(speed > 1){
-            speed = speed - 1;
+
+    if (mouseOnButton(speedDownButton)) {
+        //If mouse is on speed down button
+        switch(currentFrameRate){
+            case 12:
+                currentFrameRate = 6;
+                break;
+            case 24:
+                currentFrameRate = 12;
+                break;
+            case 36:
+                currentFrameRate = 24;
+                break;
+            case 48:
+                currentFrameRate = 36;
+                break;
+            case 60:
+                currentFrameRate = 48;
+                break;
+            default:
+                break;
         }
     }
-    */
+
 }
+
