@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simulador MAS</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta http-equiv=”Content-Type” content=”text/html; charset=ISO-8859-1″ />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body bgcolor="#E6E6E6">
+    <script src="p5.js"></script>
+    <script src="canvas2.js"></script>
+    <table class="canvasTable">
+      <tr>
+        <td rowspan="3"><div id="canvas2"></div></td>
+        <td>
+          <p>
+            Diagrama de cuerpo libre:
+            \begin{align}
+              \sum F_m &= m\ddot{x} \\\\
+              T - mg &= m\ddot{x}
+            \end{align}
+          </p>
+        </td>
+        
+      </tr>
+      <tr>
+        <td>
+          <p>
+            Ecuación de movimiento angular de la polea:
+            \begin{equation}
+
+                \begin{aligned}
+                  \sum M_o &= I  \alpha \\
+                  T R - F  K  R &= I  \alpha \\
+                  T R - \bigl(k (X + X_o) R \bigr) &= I  \ddot{\theta}
+                \end{aligned}
+
+            \end{equation}
+          </p>
+        </td>
+        
+      </tr>
+      <tr>
+        <td>
+          <p>
+            Cuando el sistema está en equilibrio se presenta la siguiente igualdad:
+            \[
+              mgR = kx_oR
+            \]
+            \begin{aligned}
+              \theta &= \frac{x}{R} \\
+              \ddot{\theta} &= \frac{\ddot{x}}{R}
+            \end{aligned}
+          </p>
+        </td>
+      </tr>
+    </table>
+    
+    <p>
+        El momento de inercia de la polea es:
+        \begin{equation}
+            \frac{1}{2}  M  r^2
+        \end{equation}
+
+        Por lo cual la ecuación 2 queda:
+
+        \begin{aligned}
+            T  R - (k  (X + X_o)  R) &= I  \ddot{\theta} \\
+
+            R  (m  g + m  \ddot{x}) - k  x  R - m  g  R &= \frac{1}{2}  M  R^\cancel{2}
+             \left(\frac{\ddot{x}}{\cancel{R}}\right) \\
+
+            \cancel{R}(\cancel{mg} + m\ddot{x} - kx - \cancel{mg}) &= \frac{1}{2}M\cancel{R} \ddot{x} \\
+
+            -m\ddot{x} - kx &= \frac1{1}{2}M\ddot{x} \\
+
+            \frac{1}{2}M\ddot{x} + m\ddot{x} + kx &= 0 \\
+
+            \ddot{x}\left(\frac{1}{2}M + m \right) &= -kx \\
+
+            \ddot{x} &= \frac{-k}{M/2 + m}x \\
+
+            \omega_o &= \sqrt{\frac{k}{M/2 + m}}
+        \end{aligned}
+    </p>
+</body>
+
+</html>
