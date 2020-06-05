@@ -89,10 +89,10 @@ function amplitudeCalc(springK, mass1, mass2, initDisp, initVel) {
     let phi = phiCalc(springK, mass1, mass2, initDisp, initVel); //Phase chage
 
     if (phi != 0) {
-        return initDisp / Math.sin(phi);
+        return Math.abs(initDisp / Math.sin(phi));
     }
     else {
-        return initVel / (w * Math.cos(phi));
+        return Math.abs(initVel / (w * Math.cos(phi)));
     }
 }
 
