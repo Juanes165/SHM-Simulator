@@ -113,28 +113,28 @@ function draw() {
     stroke(150, 0, 255);
     for (i = 0; i < 400; i++) {
         //Displacement graph
-        let d = displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 400); //displacement
+        let d = -1 * displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 200); //displacement
         point(i + 550, d * 70 / 11 + 325);
     }
     stroke(255, 255, 0);
     for (i = 0; i < 400; i++) {
         //Velocity graph
-        let d = velocityCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 400); //displacement
+        let d = -1 * velocityCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 200); //displacement
         point(i + 550, d * 70 / 45 + 475);
     }
     noStroke();
     strokeWeight(2);
     fill(255);
-    if(timeSeconds <= period){
+    if(timeSeconds <= 2 * period){
         //White square on the graph that moves over time
-        let squarePosition = 400 * timeSeconds / period
+        let squarePosition = 200 * timeSeconds / period
         rect(squarePosition + 550, 250, 400 - squarePosition, 300)
     }
 
     fill(0);
     text("Tiempo(seg): ", 475, 569)
-    for (i = 0; i < period; i++) {
-        let lines = 400 / period;
+    for (i = 0; i < 2 * period; i++) {
+        let lines = 200 / period;
         stroke(150);
         line(i * lines + 550, 250, i * lines + 550, 550)
         noStroke();
