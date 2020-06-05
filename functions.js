@@ -19,7 +19,7 @@ function roundByDecimals(number, decimals) {
  * @returns {number}
  */
 function naturalFrequencyCalc(springK, mass1, mass2) {
-    
+
     return Math.sqrt(2 * springK / (2 * mass1 + mass2));
 }
 
@@ -63,10 +63,15 @@ function periodCalc(springK, mass1, mass2) {
 function phiCalc(springK, mass1, mass2, initDisp, initVel) {
 
     let w = naturalFrequencyCalc(springK, mass1, mass2); //Natural frequency
-    if(initDisp == 0 && initVel == 0){
+    if (initDisp == 0 && initVel == 0) {
         return 0;
     }
-    return Math.atan(w * initDisp / initVel);
+    if (w * initDisp / initVel < 0) {
+        return Math.PI + Math.atan(w * initDisp / initVel);
+    }
+    else {
+        return Math.atan(w * initDisp / initVel);
+    }
 }
 
 /**
@@ -79,7 +84,7 @@ function phiCalc(springK, mass1, mass2, initDisp, initVel) {
  * @returns {number}
  */
 function amplitudeCalc(springK, mass1, mass2, initDisp, initVel) {
-    
+
     let w = naturalFrequencyCalc(springK, mass1, mass2); //Natural frequency
     let phi = phiCalc(springK, mass1, mass2, initDisp, initVel); //Phase chage
 
