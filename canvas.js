@@ -1,9 +1,6 @@
 var squareY = 200;
-var invert = false;
 var start = false;
 var startText = "START";
-
-var speed = 1;
 
 var mass;
 var pulleyMass;
@@ -23,14 +20,14 @@ var kineticEnergy;
 var potentialEnergy;
 
 var timer = 0;
-var timeSeconds = timer / 15;
+var timeSeconds = timer / 12;
 var currentFrameRate = 12;
 var animationSpeed = "x1";
 
 const startButton = { x: 20, y: 175, sizeX: 80, sizeY: 50 };
 const resetButton = { x: 20, y: 250, sizeX: 80, sizeY: 50 };
-const speedUpButton = { x: 400, y: 500, sizeX: 35, sizeY: 35};
-const speedDownButton = { x: 450, y: 500, sizeX: 35, sizeY: 35};
+const speedUpButton = { x: 450, y: 500, sizeX: 35, sizeY: 35};
+const speedDownButton = { x: 400, y: 500, sizeX: 35, sizeY: 35};
 
 /**
  * Returns true if mouse is on the button
@@ -56,7 +53,6 @@ function setup() {
     textAlign(CENTER, CENTER);
     strokeWeight(2);
     canvas.parent('canvas');
-    
 }
 
 function draw() {
@@ -91,7 +87,7 @@ function draw() {
     circle(650, 100, 150);
     fill(150, 255, 150);
     if(roundByDecimals(potentialEnergy, 3) != 0){
-        arc(650, 100, 150, 150, 0, potentialEnergy * 2 * PI / totalEnergy);
+        arc(650, 100, 150, 150, 0, potentialEnergy * 2 * PI / totalEnergy, PIE);
     }
     if (initialDisplacement == 0 && initialVelocity == 0) {
         //Conditional if there is no movement
@@ -107,6 +103,9 @@ function draw() {
 
     //Movement graph
     textAlign(CENTER, CENTER);
+    fill(0);
+    text("Xo", 530, 315);
+    text("Vo", 530, 465);
     fill(255);
     rect(550, 250, 400, 301);
     
@@ -114,13 +113,13 @@ function draw() {
     stroke(150, 0, 255);
     for (i = 0; i < 400; i++) {
         //Displacement graph
-        let d = displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 200); //displacement
+        let d = displacementCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 400); //displacement
         point(i + 550, d * 70 / 11 + 325);
     }
     stroke(255, 255, 0);
     for (i = 0; i < 400; i++) {
         //Velocity graph
-        let d = velocityCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 200); //displacement
+        let d = velocityCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, i * period / 400); //displacement
         point(i + 550, d * 70 / 45 + 475);
     }
     noStroke();
@@ -136,7 +135,7 @@ function draw() {
     text("Tiempo(seg): ", 475, 569)
     for (i = 0; i < period; i++) {
         let lines = 400 / period;
-        stroke(0);
+        stroke(150);
         line(i * lines + 550, 250, i * lines + 550, 550)
         noStroke();
         text(i, i * lines + 550, 570)
@@ -151,9 +150,9 @@ function draw() {
     textSize(20);
     stroke(0);
     textAlign(LEFT, CENTER);
-    if (amplitude > 5) {
+    if (Math.abs(amplitude) > 5) {
         //Mass will move from Xmax to Xmin if amplitude exceeds 5
-        squareY = (5 * displacement / amplitude + 15) * 20;
+        squareY = (5 * displacement / Math.abs(amplitude) + 15) * 20;
         line(400, 200, 415, 200); /*Guide X min*/ 
         line(400, 300, 415, 300); /*Guide 0 mts*/ 
         line(400, 400, 415, 400); /*Guide X max*/
@@ -164,7 +163,7 @@ function draw() {
     }
     else {
         //Mass will move between -5 and 5 meters proportional to the amplitude
-        squareY = (displacement + 15) * 20
+        squareY = (displacement + 15) * 20;
         line(400, 200, 415, 200); /*Guide -5 mts*/
         line(400, 300, 415, 300); /*Guide 0 mts*/
         line(400, 400, 415, 400); /*Guide 5 mts*/
@@ -260,9 +259,13 @@ function draw() {
     }
 
     //Speed Up Button
-    stroke(0);
-    textSize(35);
+    fill(0);
+    textSize(20);
     textAlign(RIGHT, BOTTOM);
+    text("Velocidad: ", 395, 528);
+    textSize(35);
+    stroke(0);
+    
     if(mouseOnButton(speedUpButton)){
         fill(100, 100, 255);
         rect(speedUpButton.x, speedUpButton.y, speedUpButton.sizeX, speedUpButton.sizeY);
@@ -311,8 +314,6 @@ function draw() {
     else {
         cursor(ARROW);
     }
-    textSize(20);
-    text("Velocidad: ", 395, 528);
 
     //current speed label
     fill(0);
@@ -348,8 +349,8 @@ function draw() {
     text("Frecuencia natural: " + roundByDecimals(naturalFrequency, 3) + " rad/seg", 15, 350);
     text("Frecuencia: " + roundByDecimals(frequency, 3) + " Hz", 15, 375);
     text("Periodo: " + roundByDecimals(period, 3) + " seg", 15, 400);
-    text("Desfase: " + roundByDecimals(phi, 3), 15, 425);
-    text("Amplitud: " + roundByDecimals(amplitude, 3), 15, 450);
+    text("Desfase: " + roundByDecimals(phi, 3) + " rad", 15, 425);
+    text("Amplitud: " + Math.abs(roundByDecimals(amplitude, 3)), 15, 450);
     text("Posición: " + roundByDecimals(displacement, 3) + " mts", 15, 475);
     text("Velocidad: " + roundByDecimals(velocity, 3) + " mts/seg", 15, 500);
     text("Time: " + roundByDecimals(timeSeconds, 1) + " seg", 15, 525);
@@ -390,7 +391,6 @@ function mouseClicked() {
         //If mouse is on reset button
         start = false;
         startText = "START"
-        squareY = 200;
         timer = 0;
     }
     
@@ -441,4 +441,3 @@ function mouseClicked() {
     }
 
 }
-
