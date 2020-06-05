@@ -152,7 +152,7 @@ function draw() {
     textAlign(LEFT, CENTER);
     if (Math.abs(amplitude) > 5) {
         //Mass will move from Xmax to Xmin if amplitude exceeds 5
-        squareY = (5 * displacement / Math.abs(amplitude) + 15) * 20;
+        squareY = (5 * displacement / amplitude + 15) * 20;
         line(400, 200, 415, 200); /*Guide X min*/ 
         line(400, 300, 415, 300); /*Guide 0 mts*/ 
         line(400, 400, 415, 400); /*Guide X max*/
