@@ -26,8 +26,8 @@ var animationSpeed = "x1";
 
 const startButton = { x: 20, y: 175, sizeX: 80, sizeY: 50 };
 const resetButton = { x: 20, y: 250, sizeX: 80, sizeY: 50 };
-const speedUpButton = { x: 450, y: 500, sizeX: 35, sizeY: 35};
-const speedDownButton = { x: 400, y: 500, sizeX: 35, sizeY: 35};
+const speedUpButton = { x: 450, y: 500, sizeX: 35, sizeY: 35 };
+const speedDownButton = { x: 400, y: 500, sizeX: 35, sizeY: 35 };
 
 /**
  * Returns true if mouse is on the button
@@ -73,7 +73,7 @@ function draw() {
     velocity = velocityCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
     kineticEnergy = kineticEnergyCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
     potentialEnergy = potentialEnergyCalc(springConstant, mass, pulleyMass, initialDisplacement, initialVelocity, timeSeconds);
-    
+
     //Initial values
     background(230);
     fill(255);
@@ -86,7 +86,7 @@ function draw() {
     fill(255, 100, 100);
     circle(650, 100, 150);
     fill(150, 255, 150);
-    if(roundByDecimals(potentialEnergy, 3) != 0){
+    if (roundByDecimals(potentialEnergy, 3) != 0) {
         arc(650, 100, 150, 150, 0, potentialEnergy * 2 * PI / totalEnergy, PIE);
     }
     if (initialDisplacement == 0 && initialVelocity == 0) {
@@ -108,7 +108,7 @@ function draw() {
     text("Vo", 530, 465);
     fill(255);
     rect(550, 250, 400, 301);
-    
+
     strokeWeight(3);
     stroke(150, 0, 255);
     for (i = 0; i < 400; i++) {
@@ -125,7 +125,7 @@ function draw() {
     noStroke();
     strokeWeight(2);
     fill(255);
-    if(timeSeconds <= 2 * period){
+    if (timeSeconds <= 2 * period) {
         //White square on the graph that moves over time
         let squarePosition = 200 * timeSeconds / period
         rect(squarePosition + 550, 250, 400 - squarePosition, 300)
@@ -145,16 +145,27 @@ function draw() {
     noFill();
     rect(550, 250, 400, 301);
     fill(0);
-    
+
     //Mass movement
     textSize(20);
     stroke(0);
     textAlign(LEFT, CENTER);
-    if (Math.abs(amplitude) > 5) {
+    if (amplitude > 5) {
         //Mass will move from Xmax to Xmin if amplitude exceeds 5
         squareY = (5 * displacement / amplitude + 15) * 20;
-        line(400, 200, 415, 200); /*Guide X min*/ 
-        line(400, 300, 415, 300); /*Guide 0 mts*/ 
+        line(400, 200, 415, 200); /*Guide X min*/
+        line(400, 300, 415, 300); /*Guide 0 mts*/
+        line(400, 400, 415, 400); /*Guide X max*/
+        noStroke();
+        text("X min", 430, 200);
+        text("X = 0", 430, 300);
+        text("X max", 430, 400);
+    }
+    else if (amplitude < -5) {
+        //Mass will move from Xmax to Xmin if amplitude exceeds 5
+        squareY = (-5 * displacement / amplitude + 15) * 20;
+        line(400, 200, 415, 200); /*Guide X min*/
+        line(400, 300, 415, 300); /*Guide 0 mts*/
         line(400, 400, 415, 400); /*Guide X max*/
         noStroke();
         text("X min", 430, 200);
@@ -204,7 +215,7 @@ function draw() {
     }
     line(60, 75, springLinesMovement + springLinesCompression, 60);
     line(springLinesMovement + springLinesCompression * 7, 90, squareY / 2, 75);
-    
+
     //Letter below the spring
     textSize(20);
     fill(0);
@@ -216,7 +227,7 @@ function draw() {
     circle(300, 125, 100); //Pulley
     line(350, 125, 350, squareY); //Pulley-Mass line
     square(325, squareY, 50); //Mass
-    
+
     //Letter m in the mass
     textAlign(CENTER, CENTER);
     fill(0);
@@ -226,14 +237,14 @@ function draw() {
     //Start button
     textSize(20);
     stroke(0);
-    if(mouseOnButton(startButton)){
+    if (mouseOnButton(startButton)) {
         fill(100, 100, 255);
         rect(startButton.x, startButton.y, startButton.sizeX, startButton.sizeY);
         noStroke();
         fill(255);
         text(startText, startButton.x, startButton.y, startButton.sizeX, startButton.sizeY);
     }
-    else{
+    else {
         fill(255);
         rect(startButton.x, startButton.y, startButton.sizeX, startButton.sizeY);
         noStroke();
@@ -243,14 +254,14 @@ function draw() {
 
     //Reset button
     stroke(0);
-    if(mouseOnButton(resetButton)){
+    if (mouseOnButton(resetButton)) {
         fill(100, 100, 255);
         rect(resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY);
         noStroke();
         fill(255);
         text("RESET", resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY);
     }
-    else{
+    else {
         fill(255);
         rect(resetButton.x, resetButton.y, resetButton.sizeX, resetButton.sizeY);
         noStroke();
@@ -265,15 +276,15 @@ function draw() {
     text("Velocidad: ", 395, 528);
     textSize(35);
     stroke(0);
-    
-    if(mouseOnButton(speedUpButton)){
+
+    if (mouseOnButton(speedUpButton)) {
         fill(100, 100, 255);
         rect(speedUpButton.x, speedUpButton.y, speedUpButton.sizeX, speedUpButton.sizeY);
         noStroke();
         fill(255);
         text("+", speedUpButton.x, speedUpButton.y, speedUpButton.sizeX, speedUpButton.sizeY);
     }
-    else{
+    else {
         fill(255);
         rect(speedUpButton.x, speedUpButton.y, speedUpButton.sizeX, speedUpButton.sizeY);
         noStroke();
@@ -290,14 +301,14 @@ function draw() {
 
     //Speed Down button
     stroke(0);
-    if(mouseOnButton(speedDownButton)){
+    if (mouseOnButton(speedDownButton)) {
         fill(100, 100, 255);
         rect(speedDownButton.x, speedDownButton.y, speedDownButton.sizeX, speedDownButton.sizeY);
         noStroke();
         fill(255);
         text("-", speedDownButton.x, speedDownButton.y, speedDownButton.sizeX, speedDownButton.sizeY);
     }
-    else{
+    else {
         fill(255);
         rect(speedDownButton.x, speedDownButton.y, speedDownButton.sizeX, speedDownButton.sizeY);
         noStroke();
@@ -318,7 +329,7 @@ function draw() {
     //current speed label
     fill(0);
     textSize(18);
-    switch(currentFrameRate) {
+    switch (currentFrameRate) {
         case 6:
             animationSpeed = "x0.5";
             break;
@@ -364,13 +375,13 @@ function draw() {
     textSize(40);
     text("M", 0, 0);
     rotate(-PI * (squareY - 200) / 100);
-    
+
     //Timing the animation
     if (start) {
         timer += 1;
     }
-    timeSeconds = timer / 12; 
-    
+    timeSeconds = timer / 12;
+
     frameRate(currentFrameRate); //animation speed change
 }
 
@@ -393,10 +404,10 @@ function mouseClicked() {
         startText = "START"
         timer = 0;
     }
-    
+
     if (mouseOnButton(speedUpButton)) {
         //If mouse is on speed up button
-        switch(currentFrameRate){
+        switch (currentFrameRate) {
             case 6:
                 currentFrameRate = 12
                 break;
@@ -419,7 +430,7 @@ function mouseClicked() {
 
     if (mouseOnButton(speedDownButton)) {
         //If mouse is on speed down button
-        switch(currentFrameRate){
+        switch (currentFrameRate) {
             case 12:
                 currentFrameRate = 6;
                 break;
