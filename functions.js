@@ -60,18 +60,48 @@ function periodCalc(springK, mass1, mass2) {
  * @param {number} initVel  initial velocity
  * @returns {number}
  */
+/*
+function phiCalc(springK, mass1, mass2, initDisp, initVel) {
+
+    let amp = amplitudeCalc(springK, mass1, mass2, initDisp, initVel);
+    let natFreq = naturalFrequencyCalc(springK, mass1, mass2);
+    let phi1 = Math.asin(initDisp / amp);
+    let phi2 = Math.acos(initVel / (amp * natFreq));
+    
+    if(roundByDecimals(phi1, 5) == roundByDecimals(phi2, 5)) {
+        return phi1 * 180 / Math.PI;
+    }
+    else if(phi1 < 0) {
+        
+        phi1 += Math.PI;
+        return phi1 * 180 / Math.PI;
+    }
+    else {
+        return 1000;
+    }
+}*/
 function phiCalc(springK, mass1, mass2, initDisp, initVel) {
 
     let w = naturalFrequencyCalc(springK, mass1, mass2); //Natural frequency
     if (initDisp == 0 && initVel == 0) {
         return 0;
     }
-    if (w * initDisp / initVel < 0) {
+    if (initDisp < 0 && initVel < 0) {
         return Math.PI + Math.atan(w * initDisp / initVel);
     }
-    else {
-        return Math.atan(w * initDisp / initVel);
+    if (initDisp > 0 && initVel < 0) {
+        return Math.PI + Math.atan(w * initDisp / initVel);
     }
+    if (initDisp < 0 && initVel > 0) {
+        return 2 * Math.PI + Math.atan(w * initDisp / initVel);
+    }
+    if (initDisp == 0 && initVel < 0) {
+        return Math.PI;
+    }
+    if (initDisp < 0 && initVel == 0) {
+        return 3 * Math.PI / 2;
+    }
+    return Math.atan(w * initDisp / initVel);
 }
 
 /**
@@ -84,16 +114,8 @@ function phiCalc(springK, mass1, mass2, initDisp, initVel) {
  * @returns {number}
  */
 function amplitudeCalc(springK, mass1, mass2, initDisp, initVel) {
-
-    let w = naturalFrequencyCalc(springK, mass1, mass2); //Natural frequency
-    let phi = phiCalc(springK, mass1, mass2, initDisp, initVel); //Phase chage
-
-    if (phi != 0) {
-        return initDisp / Math.sin(phi);
-    }
-    else {
-        return initVel / (w * Math.cos(phi));
-    }
+    let w = naturalFrequencyCalc(springK, mass1, mass2);
+    return Math.sqrt(Math.pow(initDisp, 2) + Math.pow(initVel / w, 2))
 }
 
 /**
