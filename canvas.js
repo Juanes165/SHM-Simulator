@@ -160,18 +160,18 @@ function draw() {
         text("X min", 430, 200);
         text("X = 0", 430, 300);
         text("X max", 430, 400);
-    }
+    }/*
     else if (amplitude < -5) {
         //Mass will move from Xmax to Xmin if amplitude exceeds 5
         squareY = (-5 * displacement / amplitude + 15) * 20;
-        line(400, 200, 415, 200); /*Guide X min*/
-        line(400, 300, 415, 300); /*Guide 0 mts*/
-        line(400, 400, 415, 400); /*Guide X max*/
+        line(400, 200, 415, 200); /*Guide X min*//*
+        line(400, 300, 415, 300); /*Guide 0 mts*//*
+        line(400, 400, 415, 400); /*Guide X max*//*
         noStroke();
         text("X min", 430, 200);
         text("X = 0", 430, 300);
         text("X max", 430, 400);
-    }
+    }*/
     else {
         //Mass will move between -5 and 5 meters proportional to the amplitude
         squareY = (displacement + 15) * 20;
@@ -357,11 +357,12 @@ function draw() {
     fill(0);
     textSize(18);
     textAlign(LEFT, CENTER);
+    text("X(t) = " + roundByDecimals(amplitude, 2) + " * Sin( " + roundByDecimals(naturalFrequency, 2) + " * t + " + roundByDecimals(phi, 2) + " )", 15, 325);
     text("Frecuencia natural: " + roundByDecimals(naturalFrequency, 3) + " rad/seg", 15, 350);
     text("Frecuencia: " + roundByDecimals(frequency, 3) + " Hz", 15, 375);
     text("Periodo: " + roundByDecimals(period, 3) + " seg", 15, 400);
     text("Desfase: " + roundByDecimals(phi, 3) + " rad", 15, 425);
-    text("Amplitud: " + Math.abs(roundByDecimals(amplitude, 3)), 15, 450);
+    text("Amplitud: " + roundByDecimals(amplitude, 3), 15, 450);
     text("Posición: " + roundByDecimals(displacement, 3) + " mts", 15, 475);
     text("Velocidad: " + roundByDecimals(velocity, 3) + " mts/seg", 15, 500);
     text("Time: " + roundByDecimals(timeSeconds, 1) + " seg", 15, 525);
@@ -450,5 +451,4 @@ function mouseClicked() {
                 break;
         }
     }
-
 }
